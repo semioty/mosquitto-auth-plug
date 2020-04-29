@@ -686,7 +686,7 @@ int mosquitto_auth_acl_check(void *userdata, const char *clientid, const char *u
 			goto outout;
 		}
 	}
-
+    /* // disable superuser back-end check
 	for (bep = ud->be_list; bep && *bep; bep++) {
 		struct backend_p *b = *bep;
 
@@ -707,7 +707,7 @@ int mosquitto_auth_acl_check(void *userdata, const char *clientid, const char *u
 			has_error = TRUE;
 		}
 	}
-
+    */
 	/*
 	 * Check authorization in the back-end used to authenticate the user.
 	 */
