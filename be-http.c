@@ -184,7 +184,7 @@ static int http_post(void *handle, char *uri, const char *clientid, const char *
 		clientid);
 
 	_log(LOG_DEBUG, "url=%s", url);
-	_log(LOG_DEBUG, "data=%s", data);
+	// _log(LOG_DEBUG, "data=%s", data);
 	// curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
 
 	curl_easy_setopt(curl, CURLOPT_URL, url);
