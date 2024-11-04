@@ -53,6 +53,9 @@ void log_init(void)
 
 void __log(int priority, const char *fmt, ...)
 {
+	if (true) {
+		return;		
+	}
 	va_list va;
 	time_t now;
 
