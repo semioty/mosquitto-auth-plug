@@ -1,11 +1,11 @@
 /*
  * Copyright (c) 2013, 2014 Jan-Piet Mens <jp@mens.de>
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
  * met:
- * 
+ *
  * 1. Redistributions of source code must retain the above copyright notice,
  * this list of conditions and the following disclaimer. 2. Redistributions
  * in binary form must reproduce the above copyright notice, this list of
@@ -14,7 +14,7 @@
  * nor the names of its contributors may be used to endorse or promote
  * products derived from this software without specific prior written
  * permission.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
@@ -42,7 +42,7 @@
 struct mysql_backend {
 	MYSQL *mysql;
 	char *host;
-	int port;	
+	int port;
 	char *dbname;
 	char *user;
 	char *pass;
@@ -71,9 +71,9 @@ void *be_mysql_init()
 	char *userquery;
 	char *opt_flag;
 	int port;
-	bool ssl_enabled;	
-	my_bool reconnect = false;
-	
+	bool ssl_enabled;
+	bool reconnect = false;
+
 
 	_log(LOG_DEBUG, "}}}} MYSQL");
 
@@ -82,7 +82,7 @@ void *be_mysql_init()
 	user = p_stab("user");
 	pass = p_stab("pass");
 	dbname = p_stab("dbname");
-	
+
 	opt_flag = get_bool("ssl_enabled", "false");
 	if (!strcmp("true", opt_flag)) {
 		ssl_enabled = true;
@@ -93,12 +93,12 @@ void *be_mysql_init()
 		_log(LOG_DEBUG, "SSL is disabled");
 	}
 
-	ssl_key = p_stab("ssl_key");	
+	ssl_key = p_stab("ssl_key");
 	ssl_cert = p_stab("ssl_cert");
 	ssl_ca = p_stab("ssl_ca");
 	ssl_capath = p_stab("ssl_capath");
 	ssl_cipher = p_stab("ssl_cipher");
-		
+
 	host = (host) ? host : strdup("localhost");
 	port = (!p) ? 3306 : atoi(p);
 
@@ -125,7 +125,7 @@ void *be_mysql_init()
 	if(ssl_enabled){
 		mysql_ssl_set(conf->mysql, ssl_key, ssl_cert, ssl_ca, ssl_capath, ssl_cipher);
 	}
-	
+
 	opt_flag = get_bool("mysql_auto_connect", "true");
 	if (!strcmp("true", opt_flag)) {
 		conf->auto_connect = true;
@@ -307,7 +307,7 @@ out:
  * topic is the topic user is trying to access (may contain wildcards) acc is
  * desired type of access: read/write for subscriptions (READ) (1) for
  * publish (WRITE) (2)
- * 
+ *
  * SELECT topic FROM table WHERE username = '%s' AND (acc & %d)		//
  * may user SUB or PUB topic? SELECT topic FROM table WHERE username = '%s'
  * / ignore ACC
