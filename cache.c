@@ -80,6 +80,10 @@ static void hexify(const char *data, char *hex)
 	// printf("%s\n", hex);
 }
 
+/* Minimum seconds between two full scans of the ACL cache for expired items */
+#define ACL_CLEANUP_INTERVAL 30
+static time_t acl_last_cleanup = 0;
+
 /* access is desired read/write access
  * granted is what Mosquitto auth-plug actually granted
  */
@@ -136,13 +140,20 @@ void acl_cache(const char *clientid, const char *username, const char *topic, in
 	/*
 	 * Check whole cache for items which need deleting. Important with
 	 * clients who show up once only (mosquitto_[sp]ub with variable clientIDs
+	 *
+	 * The scan is O(n) over the whole cache, so it must not run on every
+	 * cache miss: with a large cache it blocks the (single) mosquitto thread.
+	 * Run it at most once every ACL_CLEANUP_INTERVAL seconds.
 	 */
 
-	HASH_ITER(hh, ud->aclcache, a, tmp) {
-		if (now > a->expire_time) {
-			_log(LOG_DEBUG, " Cleanup [%s]", a->hex);
-			HASH_DEL(ud->aclcache, a);
-			free(a);
+	if (now - acl_last_cleanup >= ACL_CLEANUP_INTERVAL) {
+		acl_last_cleanup = now;
+		HASH_ITER(hh, ud->aclcache, a, tmp) {
+			if (now > a->expire_time) {
+				_log(LOG_DEBUG, " Cleanup [%s]", a->hex);
+				HASH_DEL(ud->aclcache, a);
+				free(a);
+			}
 		}
 	}
 }
